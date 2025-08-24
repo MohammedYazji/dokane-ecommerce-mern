@@ -6,6 +6,7 @@ import {
   getFeaturedProducts,
   getProductsByCategory,
   getRecommendedProducts,
+  toggleFeatured,
 } from "../controllers/product.controller.js";
 import { adminRoute, protectRoute } from "../middlewares/auth.middleware.js";
 
@@ -16,6 +17,7 @@ router.get("/featured", getFeaturedProducts);
 router.get("/recommendations", getRecommendedProducts);
 router.get("/category/:cat", getProductsByCategory);
 router.post("/", protectRoute, adminRoute, createProduct);
+router.get("/:id", toggleFeatured);
 router.post("/:id", protectRoute, adminRoute, deleteProduct);
 
 export default router;

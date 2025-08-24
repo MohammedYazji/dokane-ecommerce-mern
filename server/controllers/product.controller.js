@@ -24,8 +24,8 @@ export const getFeaturedProducts = catchAsync(async (req, res, next) => {
   // 2) if not in redis get them from mongo
   featured_products = await Product.find({ isFeatured: true }).lean(); // use lean to return js object instead of mongodb object [better performance]
 
-  if (!featured_products) {
-    return next("No featured products found", 404);
+  if (featured_products.length === 0) {
+    return next(new AppError("No featured products found", 404));
   }
 
   // 3) store in redis for future quick access
@@ -54,7 +54,8 @@ export const createProduct = catchAsync(async (req, res, next) => {
     name,
     description,
     price,
-    image: cloudinaryResponse?.secure_url ? cloudinaryResponse?.secure_url : "",
+    image: cloudinaryResponse.secure_url,
+    public_id: cloudinaryResponse.public_id,
     category,
   });
 
@@ -72,16 +73,8 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
     return next(new AppError("Product not found", 404));
   }
 
-  // if the product has image remove from cloudinary before delete the product from ongoDB
-  if (product.image) {
-    // EXAMPLE: https://res.cloudinary.com/demo/image/upload/v1698765432/dokane_products/abcd1234.png
-    const publicId = product.image.split("/").pop().split(".")[0];
-    try {
-      await cloudinary.uploader.destroy(`dokane_products/${publicId}`);
-      console.log("Deleted image from cloudinary");
-    } catch (error) {
-      console.log("error deleting image from cloudinary", error);
-    }
+  if (product.public_id) {
+    await cloudinary.uploader.destroy(product.public_id);
   }
 
   // delete from mongoDB
@@ -126,3 +119,33 @@ export const getProductsByCategory = catchAsync(async (req, res, next) => {
     products,
   });
 });
+
+export const toggleFeatured = catchAsync(async (req, res, next) => {
+  // 1) get the user
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return next(new AppError("Product not found", 404));
+  }
+
+  // 2) toggle the featured status
+  product.isFeatured = !product.isFeatured;
+
+  // 3) then save the updated product
+  const updatedProduct = await product.save();
+
+  // 4) update the redis cache
+  await updateFeaturedRedisCache();
+
+  return res.status(200).json({
+    status: "success",
+    updatedProduct,
+  });
+});
+
+async function updateFeaturedRedisCache() {
+  const featuredProducts = await Product.find({ isFeatured: true }).lean();
+
+  // update the featured products after get them from mongoDB
+  await client.set("featured_products", JSON.stringify(featuredProducts));
+}
