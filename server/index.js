@@ -5,22 +5,31 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 
-// init express app and read environment variables
+// 1) init express app and read environment variables
 dotenv.config({ path: "./.env" });
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// middlewares
+// 2) middlewares
 
 // allow us to parse the body from request as json
 app.use(express.json());
 // allow us to parse cookie from request
 app.use(cookieParser());
 
-// routes
+// 3) routes
 app.use("/api/v1/auth", authRoutes);
 
-// run the server
+// handle unhandled routes for all methods
+// this will run if not catch in any route before
+app.use((req, res, next) => {
+  res.status(404).json({
+    status: "fail",
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
+
+// 4) run the server
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
   connectDB();
