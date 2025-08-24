@@ -19,6 +19,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "product must have an image"],
     },
+    public_id: {
+      type: String,
+      required: [true, "Product must have a Cloudinary public_id"],
+    },
     category: {
       type: String,
       required: [true, "product must have a category"],
