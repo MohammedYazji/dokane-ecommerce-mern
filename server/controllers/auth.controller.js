@@ -84,11 +84,12 @@ export const login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email });
 
   // check if the user exist
-  // if (!user) {
-  //   res.status(404).json({ status: "fail", message: "user not found" });
-  // }
+  if (!user) {
+    res.status(404).json({ status: "fail", message: "user not found" });
+  }
+
   // check if password is the same in DB
-  if (!user || !(await user.isValidPassword(password))) {
+  if (!(await user.isValidPassword(password))) {
     return next(new AppError("Invalid credentials", 401));
   }
 

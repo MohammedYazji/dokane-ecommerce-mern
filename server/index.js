@@ -25,11 +25,6 @@ app.use("/api/v1/auth", authRoutes);
 // handle unhandled routes for all methods
 // this will run if not catch in any route before
 app.use((req, res, next) => {
-  // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
-  // err.status = "fail";
-  // err.statusCode = 404;
-  // next(err);
-
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
