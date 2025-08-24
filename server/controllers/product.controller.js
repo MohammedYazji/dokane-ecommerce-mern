@@ -92,3 +92,37 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
     message: "Product deleted successfully",
   });
 });
+
+export const getRecommendedProducts = catchAsync(async (req, res, next) => {
+  const products = await Product.aggregate([
+    {
+      $sample: { size: 3 },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        description: 1,
+        image: 1,
+        price: 1,
+        category: 1,
+      },
+    },
+  ]);
+
+  return res.status(200).json({
+    status: "success",
+    products,
+  });
+});
+
+export const getProductsByCategory = catchAsync(async (req, res, next) => {
+  const { cat } = req.params;
+
+  const products = await Product.find({ category: cat });
+
+  return res.status(200).json({
+    status: "success",
+    products,
+  });
+});
