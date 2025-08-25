@@ -4,14 +4,16 @@ import {
   login,
   logout,
   refreshAccessToken,
+  getProfile,
 } from "../controllers/auth.controller.js";
+import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
-// refresh the access token
 router.post("/refresh-token", refreshAccessToken);
+router.get("/profile", protectRoute, getProfile);
 
 export default router;

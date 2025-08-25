@@ -174,3 +174,7 @@ export const refreshAccessToken = catchAsync(async (req, res, next) => {
     message: "token refreshed successfully",
   });
 });
+
+export const getProfile = catchAsync(async (req, res, next) => {
+  res.json(200).json({ status: "success", user: req.user });
+});
