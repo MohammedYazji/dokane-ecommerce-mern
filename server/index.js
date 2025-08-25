@@ -7,6 +7,7 @@ import globalErrorHandler from "./middlewares/error.middleware.js";
 import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js";
+import cartRoutes from "./routes/cart.route.js";
 
 // 1) init express app and read environment variables
 dotenv.config({ path: "./.env" });
@@ -22,7 +23,8 @@ app.use(cookieParser());
 
 // 3) routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/auth", productRoutes);
+app.use("/api/v1/cart", cartRoutes);
 
 // handle unhandled routes for all methods
 // this will run if not catch in any route before
