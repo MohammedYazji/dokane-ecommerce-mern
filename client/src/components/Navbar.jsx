@@ -1,4 +1,4 @@
-import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
+import { ShoppingCart, UserPlus, LogIn, LogOut, UserStar } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -39,7 +39,7 @@ const Navbar = () => {
             )}
             {isAdmin && (
               <Link className="bg-light hover:bg-dark hover:text-white text-gray-700  px-3 py-1 rounded-md font-medium transition duration-300 ease-in-out flex items-center">
-                <Lock className="inline-block mr-1" size={18} />
+                <UserStar className="inline-block mr-1" size={18} />
                 <span className="hidden sm:inline">Dashboard</span>
               </Link>
             )}
