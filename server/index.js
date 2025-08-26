@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import AppError from "./utils/appError.js";
 import globalErrorHandler from "./middlewares/error.middleware.js";
@@ -12,10 +13,18 @@ import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 
-// 1) init express app and read environment variables
+// 0) init express app and read environment variables
 dotenv.config({ path: "./.env" });
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// 1) setup cors
+app.use(
+  cors({
+    origin: "http://localhost:5173", // to receive cookies from front
+    credentials: true,
+  })
+);
 
 // 2) middlewares
 
