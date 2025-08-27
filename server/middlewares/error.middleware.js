@@ -1,3 +1,5 @@
+import AppError from "../utils/appError.js";
+
 // function to send errors when we are in development
 const sendDevError = (err, res) => {
   // in development send another information about the error like 1) stack [where the error happens] and 2) the whole error object
@@ -31,6 +33,13 @@ const sendProdError = (err, res) => {
   }
 };
 
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((val) => val.message);
+
+  const message = `Invalid input data. ${errors.join(". ")}`;
+  return new AppError(message, 400);
+};
+
 const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
@@ -38,7 +47,14 @@ const globalErrorHandler = (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendDevError(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    sendProdError(err, res);
+    // its not best practice to mutate the original error object so we copy it before
+    let error = Object.create(err);
+
+    if (error.name === "ValidationError") {
+      error = handleValidationErrorDB(error);
+    }
+
+    sendProdError(error, res);
   }
 };
 
