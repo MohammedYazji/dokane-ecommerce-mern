@@ -22,7 +22,7 @@ function App() {
       <Navbar className="" />
       <main className="pt-20 px-10">
         <Routes>
-          <Route path="/" element={user ? <HomePage /> : <HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/signup"
             element={!user ? <SignUpPage /> : <Navigate to="/" />}

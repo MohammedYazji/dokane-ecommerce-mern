@@ -60,4 +60,15 @@ export const useUserStore = create((set, get) => ({
       set({ checkingAuth: false, user: null });
     }
   },
+
+  logout: async () => {
+    try {
+      await axios.post("/auth/logout");
+      set({ user: null });
+    } catch (error) {
+      toast.error(
+        toast.response?.data?.message || "Something wrong during logout"
+      );
+    }
+  },
 }));
