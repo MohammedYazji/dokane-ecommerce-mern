@@ -11,16 +11,17 @@ export const useProductStore = create((set) => ({
   createProduct: async (productData) => {
     set({ loading: true });
     try {
-      console.log(productData);
       const res = await axios.post("/products", productData);
       set((prevState) => ({
         products: [...prevState.products, res.data.product],
         loading: false,
       }));
     } catch (error) {
-      toast.error(
-        error?.response?.data?.error || "error during creating the product"
-      );
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Error creating product";
+      toast.error(msg);
       set({ loading: false });
     }
   },

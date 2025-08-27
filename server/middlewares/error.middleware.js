@@ -5,7 +5,6 @@ const sendDevError = (err, res) => {
   // in development send another information about the error like 1) stack [where the error happens] and 2) the whole error object
   res.status(err.statusCode).json({
     status: err.status,
-    error: err,
     message: err.message,
     stack: err.stack,
   });

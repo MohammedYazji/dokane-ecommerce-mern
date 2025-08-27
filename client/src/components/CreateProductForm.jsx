@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, Upload, Loader } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
+import toast from "react-hot-toast";
 
 const categories = [
   "t-shirts",
@@ -25,10 +26,9 @@ const CreateProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await createProduct(newProduct);
-
-    // Only reset the form if the product was created successfully
-    if (result?.success) {
+    try {
+      await createProduct(newProduct);
+      // Reset the form after successful submission
       setNewProduct({
         name: "",
         description: "",
@@ -36,6 +36,9 @@ const CreateProductForm = () => {
         category: "",
         image: "",
       });
+      toast.success("Product created successfully!");
+    } catch (error) {
+      // Error is already handled in the store
     }
   };
 
@@ -115,12 +118,13 @@ const CreateProductForm = () => {
             Price
           </label>
           <input
-            type="number"
             id="price"
+            type="number"
+            min="0"
             step="0.01"
             value={newProduct.price}
             onChange={(e) =>
-              setNewProduct({ ...newProduct, price: e.target.value })
+              setNewProduct({ ...newProduct, price: Number(e.target.value) })
             }
             className="w-full rounded-xl bg-gray-800 border border-gray-600 px-4 py-3 text-white placeholder-gray-400 focus:ring-2 focus:ring-cream focus:outline-none transition"
             placeholder="Enter price in USD"

@@ -41,19 +41,27 @@ export const getFeaturedProducts = catchAsync(async (req, res, next) => {
 export const createProduct = catchAsync(async (req, res, next) => {
   const { name, description, price, image, category } = req.body;
 
+  if (!name || !description || !price || !category) {
+    return next(new AppError("Missing required fields", 400));
+  }
+
   let cloudinaryResponse = null;
 
   if (image) {
-    cloudinaryResponse = await cloudinary.uploader.upload(image, {
-      folder: "dokane_products",
-    });
+    try {
+      cloudinaryResponse = await cloudinary.uploader.upload(image, {
+        folder: "dokane_products",
+      });
+    } catch (err) {
+      return next(new AppError("Cloudinary upload failed", 500));
+    }
   }
 
   // create the product and save it
   const product = await Product.create({
     name,
     description,
-    price,
+    price: parseFloat(price),
     image: cloudinaryResponse.secure_url,
     public_id: cloudinaryResponse.public_id,
     category,
