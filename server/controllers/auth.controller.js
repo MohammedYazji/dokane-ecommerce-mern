@@ -176,5 +176,5 @@ export const refreshAccessToken = catchAsync(async (req, res, next) => {
 });
 
 export const getProfile = catchAsync(async (req, res, next) => {
-  res.json(200).json({ status: "success", user: req.user });
+  res.status(200).json({ status: "success", user: req.user });
 });

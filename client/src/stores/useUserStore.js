@@ -49,4 +49,15 @@ export const useUserStore = create((set, get) => ({
       );
     }
   },
+
+  // to make pages refresh auto and if user exist to decide any page to use [without refresh the page manually after each process]
+  checkAuth: async () => {
+    set({ checkingAuth: true });
+    try {
+      const res = await axios.get("/auth/profile");
+      set({ user: res.data.user, checkingAuth: false });
+    } catch (error) {
+      set({ checkingAuth: false, user: null });
+    }
+  },
 }));
