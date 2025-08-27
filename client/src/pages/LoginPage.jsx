@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { LogIn, Loader } from "lucide-react";
+import { LogIn, Loader, Lock, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import FormField from "../components/FormField.jsx";
 import { useUserStore } from "../stores/useUserStore.js";
@@ -44,6 +44,8 @@ const LoginPage = () => {
                 userData={userData}
                 setUserData={setUserData}
                 placeholder="mohammed@example.com"
+                type="email"
+                icon={<Mail className="h-5 w-5 text-dark" aria-hidden="true" />}
               />
               <FormField
                 field_id="password"
@@ -51,6 +53,8 @@ const LoginPage = () => {
                 userData={userData}
                 setUserData={setUserData}
                 placeholder="••••••••••••"
+                type="password"
+                icon={<Lock className="h-5 w-5 text-dark" aria-hidden="true" />}
               />
             </div>
             <button

@@ -39,7 +39,10 @@ const Navbar = () => {
               </Link>
             )}
             {isAdmin && (
-              <Link className="bg-light hover:bg-dark hover:text-white text-gray-700  px-3 py-1 rounded-md font-medium transition duration-300 ease-in-out flex items-center">
+              <Link
+                to="/admin-dashboard"
+                className="bg-light hover:bg-dark hover:text-white text-gray-700  px-3 py-1 rounded-md font-medium transition duration-300 ease-in-out flex items-center"
+              >
                 <UserStar className="inline-block mr-1" size={18} />
                 <span className="hidden sm:inline">Dashboard</span>
               </Link>

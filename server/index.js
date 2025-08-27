@@ -29,13 +29,13 @@ app.use(
 // 2) middlewares
 
 // allow us to parse the body from request as json
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 // allow us to parse cookie from request
 app.use(cookieParser());
 
 // 3) routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/auth", productRoutes);
+app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/coupons", couponRoutes);
 app.use("/api/v1/payments", paymentRoutes);
