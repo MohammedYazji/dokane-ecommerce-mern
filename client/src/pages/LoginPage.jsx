@@ -3,16 +3,18 @@ import { Link } from "react-router-dom";
 import { LogIn, Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import FormField from "../components/FormField.jsx";
+import { useUserStore } from "../stores/useUserStore.js";
 
 const LoginPage = () => {
-  const loading = false;
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
+  const { login, loading } = useUserStore();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
+    login(userData.email, userData.password);
   };
 
   return (
@@ -39,15 +41,15 @@ const LoginPage = () => {
               <FormField
                 field_id="email"
                 field_name="Email Address"
-                userData={email}
-                setUserData={setEmail}
+                userData={userData}
+                setUserData={setUserData}
                 placeholder="mohammed@example.com"
               />
               <FormField
                 field_id="password"
                 field_name="Password"
-                userData={password}
-                setUserData={setPassword}
+                userData={userData}
+                setUserData={setUserData}
                 placeholder="••••••••••••"
               />
             </div>

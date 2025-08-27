@@ -33,4 +33,20 @@ export const useUserStore = create((set, get) => ({
       );
     }
   },
+
+  login: async (email, password) => {
+    // 1) set the loading to be true
+    set({ loading: true });
+
+    // 2) try to send request to the server
+    try {
+      const res = await axios.post("/auth/login", { email, password });
+      set({ user: res.data.user, loading: false });
+    } catch (error) {
+      set({ loading: false });
+      toast.error(
+        error?.response?.data?.message || "Something wrong during login"
+      );
+    }
+  },
 }));
