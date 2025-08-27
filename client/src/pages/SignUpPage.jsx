@@ -38,7 +38,7 @@ const SignUpPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <div className="bg-accent py-8 px-4 mt-6 shadow-2xl border-amber-300 border-1 shadow-dark sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-4 mt-6 shadow-2xl border-amber-300 border-1 shadow-dark sm:rounded-lg sm:px-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <FormField
