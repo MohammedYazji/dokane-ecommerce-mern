@@ -39,22 +39,46 @@ export const getFeaturedProducts = catchAsync(async (req, res, next) => {
 });
 
 export const createProduct = catchAsync(async (req, res, next) => {
-  const { name, description, price, image, category } = req.body;
+  const { name, description, price, category } = req.body;
 
   if (!name || !description || !price || !category) {
     return next(new AppError("Missing required fields", 400));
   }
 
-  let cloudinaryResponse = null;
+  if (!req.file) {
+    return next(new AppError("Product image is required", 400));
+  }
 
-  if (image) {
-    try {
-      cloudinaryResponse = await cloudinary.uploader.upload(image, {
-        folder: "dokane_products",
+  let cloudinaryResponse;
+  try {
+    // Upload buffer directly to Cloudinary using upload_stream
+    cloudinaryResponse = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "dokane_products",
+          resource_type: "auto",
+        },
+        (error, result) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            return reject(new AppError('Failed to upload image to Cloudinary', 500));
+          }
+          resolve(result);
+        }
+      );
+      
+      // Handle stream errors
+      uploadStream.on('error', (error) => {
+        console.error('Stream error:', error);
+        reject(new AppError('Error processing image upload', 500));
       });
-    } catch (err) {
-      return next(new AppError("Cloudinary upload failed", 500));
-    }
+      
+      // Write the buffer to the stream
+      uploadStream.end(req.file.buffer);
+    });
+  } catch (error) {
+    console.error('Error in createProduct:', error);
+    return next(error);
   }
 
   // create the product and save it

@@ -45,13 +45,8 @@ const CreateProductForm = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setNewProduct({ ...newProduct, image: reader.result });
-      };
-
-      reader.readAsDataURL(file); // as base64 format
+      // Store the actual file object instead of base64
+      setNewProduct({ ...newProduct, image: file });
     }
   };
 
