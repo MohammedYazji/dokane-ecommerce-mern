@@ -16,7 +16,7 @@ const ProductsList = () => {
         <table className="min-w-full divide-y divide-gray-700">
           <thead className="bg-gray-800">
             <tr>
-              {["Product", "Price", "Category", "Featured", "Actions"].map(
+              {["Product", "Price", "Category", "Featured", "Delete"].map(
                 (header) => (
                   <th
                     key={header}
