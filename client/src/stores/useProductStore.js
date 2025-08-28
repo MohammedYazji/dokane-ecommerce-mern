@@ -41,4 +41,56 @@ export const useProductStore = create((set) => ({
       set({ loading: false });
     }
   },
+
+  getAllProducts: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/products");
+      set({ products: res.data.products, loading: false });
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Error fetching products";
+      toast.error(msg);
+      set({ loading: false });
+    }
+  },
+  toggleFeatured: async (id) => {
+    set({ loading: true });
+    try {
+      const res = await axios.put(`/products/${id}`);
+      set((prevState) => ({
+        products: prevState.products.map((product) =>
+          product._id === id ? res.data.updatedProduct : product
+        ),
+        loading: false,
+      }));
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Error toggle featured";
+      toast.error(msg);
+      set({ loading: false });
+    }
+  },
+
+  deleteProduct: async (id) => {
+    set({ loading: true });
+    try {
+      const res = await axios.delete(`/products/${id}`);
+      set((prevState) => ({
+        products: prevState.products.filter((product) => product._id !== id),
+        loading: false,
+      }));
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Error delete product";
+      toast.error(msg);
+      set({ loading: false });
+    }
+  },
 }));

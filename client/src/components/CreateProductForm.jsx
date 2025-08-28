@@ -57,7 +57,7 @@ const CreateProductForm = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-cream to-yellow-200 bg-clip-text text-transparent">
+      <h2 className="text-3xl font-bold mb-8 text-center text-dark">
         Create New Product
       </h2>
 
@@ -184,7 +184,7 @@ const CreateProductForm = () => {
           whileTap={{ scale: 0.97 }}
           type="submit"
           disabled={loading}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-cream text-gray-900 font-semibold py-3 transition hover:bg-yellow-200 focus:ring-2 focus:ring-offset-2 focus:ring-cream disabled:opacity-60"
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-dark text-gray-900 font-semibold py-3 transition hover:bg-light focus:ring-2 focus:ring-offset-2 focus:ring-cream disabled:opacity-60"
         >
           {loading ? (
             <>
