@@ -14,7 +14,7 @@ const categories = [
       "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    href: "/tshirts",
+    href: "/t-shirts",
     name: "T-shirts",
     imageUrl:
       "https://images.unsplash.com/photo-1716541424893-734612ddcabb?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",

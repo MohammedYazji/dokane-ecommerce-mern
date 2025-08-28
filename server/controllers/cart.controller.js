@@ -13,12 +13,14 @@ export const addToCart = catchAsync(async (req, res, next) => {
   const { productId } = req.body;
   const user = req.user;
 
-  // itemExisted in item object inside the user cart
-  const itemExisted = user.cartItems.find((item) => item.product === productId);
+  // Check if product already exists in cart
+  const itemExisted = user.cartItems.find(
+    (item) => item.product.toString() === productId.toString()
+  );
   if (itemExisted) {
     itemExisted.quantity += 1;
   } else {
-    // add it
+    // Add new item to cart
     user.cartItems.push({ product: productId, quantity: 1 });
   }
 

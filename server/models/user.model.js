@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -35,7 +35,7 @@ const userSchema = mongoose.Schema(
     ],
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 
@@ -61,6 +61,7 @@ userSchema.methods.isValidPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
   } catch (error) {
     console.log("Password comparison failed");
+    return false;
   }
 };
 

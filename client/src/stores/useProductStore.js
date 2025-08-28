@@ -93,4 +93,19 @@ export const useProductStore = create((set) => ({
       set({ loading: false });
     }
   },
+
+  getProductsByCategory: async (cat) => {
+    set({ loading: true });
+    try {
+      const res = await axios.get(`/products/category/${cat}`);
+      set({ products: res.data.products, loading: false });
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Error fetching products by category";
+      toast.error(msg);
+      set({ loading: false });
+    }
+  },
 }));
