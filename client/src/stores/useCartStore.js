@@ -68,4 +68,37 @@ export const useCartStore = create((set, get) => ({
 
     set({ subTotal, total });
   },
+
+  deleteFromCart: async (id) => {
+    try {
+      await axios.delete(`/cart`, { data: { productId: id } });
+      set((prevState) => ({
+        cart: prevState.cart.filter((item) => item.product._id !== id),
+      }));
+      get().calcTotal();
+      toast.success('Item removed from cart');
+    } catch (error) {
+      const msg = error?.response?.data?.message || 'Failed to remove item from cart';
+      toast.error(msg);
+    }
+  },
+
+  updateQuantity: async (id, quantity) => {
+    if (quantity < 1) {
+      get().deleteFromCart(id);
+      return;
+    }
+    try {
+      await axios.put(`/cart/${id}`, { quantity });
+      set((prevState) => ({
+        cart: prevState.cart.map((item) =>
+          item.product._id === id ? { ...item, quantity } : item
+        ),
+      }));
+      get().calcTotal();
+    } catch (error) {
+      const msg = error?.response?.data?.message || 'Failed to update quantity';
+      toast.error(msg);
+    }
+  },
 }));

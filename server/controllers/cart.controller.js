@@ -44,10 +44,12 @@ export const deleteAllFromCart = catchAsync(async (req, res, next) => {
 });
 
 export const updateQuantity = catchAsync(async (req, res, next) => {
-  const { id: productId } = req.params;
+  const { id } = req.params;
   const { quantity } = req.body;
   const user = req.user;
-  const itemExisted = user.cartItems.find((item) => item.product === productId);
+  const itemExisted = user.cartItems.find(
+    (item) => item.product.toString() === id
+  );
 
   if (!itemExisted) {
     return next(new AppError("Product not found", 404));
@@ -55,7 +57,7 @@ export const updateQuantity = catchAsync(async (req, res, next) => {
 
   if (quantity === 0) {
     // so remove it
-    removeProductFromUserCart(user, productId);
+    removeProductFromUserCart(user, id);
   } else {
     // just update the quantity
     itemExisted.quantity = quantity;
@@ -70,7 +72,7 @@ export const updateQuantity = catchAsync(async (req, res, next) => {
 export const getCartProducts = catchAsync(async (req, res, next) => {
   const user = await req.user.populate({
     path: "cartItems.product",
-    select: "name price image",
+    select: "name price image description",
   });
 
   res.status(200).json({ status: "success", cart: user.cartItems });

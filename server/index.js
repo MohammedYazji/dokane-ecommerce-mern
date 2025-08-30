@@ -21,7 +21,8 @@ const PORT = process.env.PORT || 3000;
 // 1) setup cors
 app.use(
   cors({
-    origin: "http://localhost:5173", // to receive cookies from front
+    origin: "http://localhost:5173", // your frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
