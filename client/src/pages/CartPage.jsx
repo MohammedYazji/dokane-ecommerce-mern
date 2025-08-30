@@ -3,6 +3,8 @@ import { useCartStore } from "../stores/useCartStore";
 import { motion } from "framer-motion";
 import CartItem from "../components/CartItem";
 import { Link } from "react-router-dom";
+import OrderSummary from "../components/OrderSummary";
+import PeopleAlsoBought from "../components/PeopleAlsoBought";
 
 const CartPage = () => {
   const { cart } = useCartStore();
@@ -22,11 +24,22 @@ const CartPage = () => {
             ) : (
               <div className="space-y-6">
                 {cart.map((item) => (
-                  <CartItem key={item._id} item={item} />
+                  <CartItem key={item.product._id} item={item} />
                 ))}
               </div>
             )}
+            {cart.length > 0 && <PeopleAlsoBought />}
           </motion.div>
+          {cart.length > 0 && (
+            <motion.div
+              className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <OrderSummary />
+            </motion.div>
+          )}
         </div>
       </div>
     </div>

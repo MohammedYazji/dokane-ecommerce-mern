@@ -8,7 +8,6 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCartStore();
 
   const handleAddToCart = () => {
-    console.log(user);
     if (!user) {
       toast.error("Please login to add products to cart", { id: "login" });
       return;

@@ -7,6 +7,7 @@ export const useCartStore = create((set, get) => ({
   coupon: null,
   total: 0,
   subTotal: 0,
+  isCouponApplied: false,
 
   addToCart: async (product) => {
     try {
@@ -15,24 +16,26 @@ export const useCartStore = create((set, get) => ({
 
       set((prevState) => {
         const isExistBefore = prevState.cart.find(
-          (item) => item._id === product._id
+          (item) => item.product._id === product._id
         );
-        console.log(isExistBefore);
+
         const newCart = isExistBefore
           ? prevState.cart.map((item) =>
-              item._id === product._id
+              item.product._id === product._id
                 ? { ...item, quantity: item.quantity + 1 }
                 : item
             )
-          : [...prevState.cart, { ...product, quantity: 1 }];
+          : [...prevState.cart, { product, quantity: 1 }];
+
         return { cart: newCart };
       });
+
       get().calcTotal();
     } catch (error) {
       const msg =
         error?.response?.data?.message ||
         error.message ||
-        "Error get cart products";
+        "Error adding product to cart";
       toast.error(msg);
       set({ cart: [] });
     }
@@ -56,7 +59,7 @@ export const useCartStore = create((set, get) => ({
   calcTotal: () => {
     const { cart, coupon } = get();
     const subTotal = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+      (sum, item) => sum + item.product.price * item.quantity,
       0
     );
     let total = subTotal;
@@ -76,9 +79,10 @@ export const useCartStore = create((set, get) => ({
         cart: prevState.cart.filter((item) => item.product._id !== id),
       }));
       get().calcTotal();
-      toast.success('Item removed from cart');
+      toast.success("Item removed from cart");
     } catch (error) {
-      const msg = error?.response?.data?.message || 'Failed to remove item from cart';
+      const msg =
+        error?.response?.data?.message || "Failed to remove item from cart";
       toast.error(msg);
     }
   },
@@ -97,7 +101,7 @@ export const useCartStore = create((set, get) => ({
       }));
       get().calcTotal();
     } catch (error) {
-      const msg = error?.response?.data?.message || 'Failed to update quantity';
+      const msg = error?.response?.data?.message || "Failed to update quantity";
       toast.error(msg);
     }
   },
