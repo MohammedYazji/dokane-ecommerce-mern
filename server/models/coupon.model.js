@@ -19,7 +19,7 @@ const couponSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      required: [true, "coupon must defined as active or not"],
+      default: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -52,22 +52,24 @@ export const createCheckoutSession = catchAsync(async (req, res, next) => {
 
   // array will pass it to stripe
   // will be like => [{price_data:{}, quantity:}, {...}]
-  const lineItems = products.map((product) => {
+  const lineItems = products.map((p) => {
+    const price = Number(p.product.price);
+    const quantity = Number(p.quantity);
     // for each product convert amount to cents as stripe want
-    const amount = Math.round(product.price * 100);
+    const amount = Math.round(p.product.price * 100);
     // sum the total amount for all products
-    totalAmount += amount * product.quantity;
+    totalAmount += amount * p.quantity;
 
     return {
       price_data: {
         currency: "usd",
         product_data: {
-          name: product.name,
-          images: [product.image],
+          name: p.product.name,
+          images: [p.product.image],
         },
         unit_amount: amount,
       },
-      quantity: product.quantity,
+      quantity,
     };
   });
 
@@ -115,9 +117,9 @@ export const createCheckoutSession = catchAsync(async (req, res, next) => {
       couponCode: couponCode || "",
       products: JSON.stringify(
         products.map((p) => ({
-          id: p._id,
+          id: p.product._id,
           quantity: p.quantity,
-          price: p.price,
+          price: p.product.price,
         }))
       ),
     },
