@@ -187,11 +187,16 @@ export const checkoutSuccess = catchAsync(async (req, res, next) => {
   // save the order
   await newOrder.save();
 
+  // Clear the user's cart after successful purchase
+  const user = req.user;
+  user.cartItems = [];
+  await user.save();
+
   // return the new order id
   res.status(200).json({
     status: "success",
     message:
-      "Payment successful, order created, and coupon deactivated if used",
+      "Payment successful, order created, cart cleared, and coupon deactivated if used",
     orderId: newOrder._id,
   });
 });
