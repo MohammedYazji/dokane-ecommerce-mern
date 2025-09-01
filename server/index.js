@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import AppError from "./utils/appError.js";
 import globalErrorHandler from "./middlewares/error.middleware.js";
@@ -17,6 +18,8 @@ import analyticsRoutes from "./routes/analytics.route.js";
 dotenv.config({ path: "./.env" });
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const __dirname = path.resolve();
 
 // 1) setup cors
 app.use(
@@ -47,6 +50,14 @@ app.use("/api/v1/analytics", analyticsRoutes);
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/client/dist")));
+
+  app.all("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
+  });
+}
 
 // make a global error handling middleware
 app.use(globalErrorHandler);
