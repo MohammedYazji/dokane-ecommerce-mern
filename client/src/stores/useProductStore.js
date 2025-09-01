@@ -108,4 +108,19 @@ export const useProductStore = create((set) => ({
       set({ loading: false });
     }
   },
+
+  getFeaturedProducts: async () => {
+    set({ loading: true });
+    try {
+      const res = await axios.get("/products/featured");
+      set({ products: res.data.featured_products, loading: false });
+    } catch (error) {
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Error fetching products by category";
+      toast.error(msg);
+      set({ loading: false });
+    }
+  },
 }));
