@@ -15,6 +15,8 @@ async function createStripeCoupon(discountPercentage) {
 
 // create a coupon document in MONGODB
 async function createNewCoupon(userId) {
+  // first delete the previous one
+  await Coupon.findOneAndDelete({ userId });
   // create a new coupon
   const newCoupon = new Coupon({
     // 1) generate a random coupon
