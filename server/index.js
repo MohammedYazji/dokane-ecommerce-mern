@@ -4,6 +4,18 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
 
+// Error handling for unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
+});
+
+// Error handling for uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
 import AppError from "./utils/appError.js";
 import globalErrorHandler from "./middlewares/error.middleware.js";
 import { connectDB } from "./lib/db.js";
@@ -22,13 +34,14 @@ const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
 // 1) setup cors
-app.use(
-  cors({
-    origin: "http://localhost:5173", // your frontend
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL || 'http://localhost:5173'
+    : 'http://localhost:5173',
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 // 2) middlewares
 
