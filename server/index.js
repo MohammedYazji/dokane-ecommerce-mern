@@ -2,19 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import path from "path";
-
-// Error handling for unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
-});
-
-// Error handling for uncaught exceptions
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-  process.exit(1);
-});
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 
 import AppError from "./utils/appError.js";
 import globalErrorHandler from "./middlewares/error.middleware.js";
@@ -30,18 +20,17 @@ import analyticsRoutes from "./routes/analytics.route.js";
 dotenv.config({ path: "./.env" });
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // 1) setup cors
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL || 'http://localhost:5173'
-    : 'http://localhost:5173',
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // 2) middlewares
 
@@ -49,6 +38,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 // allow us to parse cookie from request
 app.use(cookieParser());
+
 
 // 3) routes
 app.use("/api/v1/auth", authRoutes);
@@ -58,19 +48,31 @@ app.use("/api/v1/coupons", couponRoutes);
 app.use("/api/v1/payments", paymentRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 
+// Serve frontend in production
+if (process.env.NODE_ENV === "production") {
+  const staticPath = path.join(__dirname, "..", "client", "dist");
+  if (fs.existsSync(staticPath)) {
+    app.use(express.static(staticPath));
+    app.get(/^(?!\/api).*/, (req, res) => {
+      res.sendFile(path.join(staticPath, "index.html"));
+    });
+  } else {
+    app.get("*", (req, res) =>
+      res.status(500).json({ error: "Frontend not built" })
+    );
+  }
+} else {
+  app.get("/", (req, res) => {
+    res.json({ message: "API is running in development mode" });
+  });
+}
+
 // handle unhandled routes for all methods
 // this will run if not catch in any route before
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/client/dist")));
-
-  app.all("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
-  });
-}
 
 // make a global error handling middleware
 app.use(globalErrorHandler);
