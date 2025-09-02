@@ -4,7 +4,7 @@ const axiosInstance = axios.create({
   baseURL:
     import.meta.mode === "development"
       ? "http://localhost:3000/api/v1"
-      : "/api",
+      : "/api/v1",
   withCredentials: true, // send cookies every request
 });
 export default axiosInstance;
