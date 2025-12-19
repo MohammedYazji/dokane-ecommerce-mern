@@ -21,3 +21,11 @@ Dokane is a simple **MERN e-commerce app** with authentication, payments, and an
 - **Frontend:** React, TailwindCSS
 - **Backend:** Node.js, Express, MongoDB
 - **Other:** Redis, Stripe, Cloudinary
+
+---
+
+## Note
+
+Use Admin Information to can access the admin dashboard:
+Email: admin@dokane.io
+Password: admin@12345
